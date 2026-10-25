@@ -22,6 +22,80 @@ local function httpGet(url)
     return game:HttpGet(url)
 end
 
+local assetFiles = {
+    ["rbxassetid://11389137937"] = "11389137937.rbxmx",
+    ["rbxassetid://5042114982"] = "5042114982.rbxmx",
+}
+
+local function getAssetFile(name)
+    local folder = "hydroxide/assets"
+    local path = folder .. "/" .. name
+
+    if isFolder and makeFolder and not isFolder(folder) then
+        makeFolder(folder)
+    end
+
+    if not (isFile and isFile(path)) then
+        writeFile(path, httpGet("https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. branch .. "/github-assets/" .. name))
+    end
+
+    return path
+end
+
+local function unwrapAsset(object)
+    while object and object.ClassName == "Model" and #object:GetChildren() == 1 do
+        object = object:GetChildren()[1]
+    end
+
+    return object
+end
+
+local function loadAsset(asset)
+    local name = assetFiles[asset]
+    local reason = name and "getcustomasset unavailable" or "no local file"
+
+    if name and getcustomasset then
+        local pathSuccess, path = pcall(getAssetFile, name)
+
+        if pathSuccess and path then
+            reason = "getcustomasset failed"
+
+            local contentSuccess, content = pcall(getcustomasset, path)
+
+            if contentSuccess and content then
+                reason = "local loader failed"
+
+                local loadSuccess, object = pcall(function()
+                    return game:GetService("InsertService"):LoadLocalAsset(content)
+                end)
+
+                if loadSuccess and object then
+                    print(("[Hydroxide] Loaded %s with InsertService:LoadLocalAsset"):format(name))
+                    return unwrapAsset(object)
+                end
+
+                local objectsSuccess, objects = pcall(function()
+                    return game:GetObjects(content)
+                end)
+
+                if objectsSuccess and objects and objects[1] then
+                    print(("[Hydroxide] Loaded %s with game:GetObjects"):format(name))
+                    return unwrapAsset(objects[1])
+                end
+
+                reason = (not loadSuccess and tostring(object)) or (not objectsSuccess and tostring(objects)) or "local loader returned nil"
+            else
+                reason = tostring(content)
+            end
+        else
+            reason = tostring(path)
+        end
+    end
+
+    warn(("[Hydroxide] Could not load %s locally (%s), pulling from Roblox"):format(asset, reason))
+    return game:GetObjects(asset)[1]
+end
+
 local function hasMethods(methods)
     for name in pairs(methods) do
         if not environment[name] then
@@ -226,6 +300,7 @@ if readFile and writeFile then
             createFolder("hydroxide/user/" .. user .. "/ui")
             createFolder("hydroxide/user/" .. user .. "/ui/controls")
             createFolder("hydroxide/user/" .. user .. "/ui/modules")
+            createFolder("hydroxide/assets")
         end
 
         function environment.import(asset)
@@ -236,7 +311,7 @@ if readFile and writeFile then
             local assets
 
             if asset:find("rbxassetid://") then
-                assets = { game:GetObjects(asset)[1] }
+                assets = { loadAsset(asset) }
             elseif web then
                 if readFile and writeFile then
                     local file = (hasFolderFunctions and "hydroxide/user/" .. user .. '/' .. asset .. ".lua") or ("hydroxide-" .. user .. '-' .. asset:gsub('/', '-') .. ".lua")
@@ -276,7 +351,7 @@ if readFile and writeFile then
             end
 
             if asset:find("rbxassetid://") then
-                assets = { game:GetObjects(asset)[1] }
+                assets = { loadAsset(asset) }
             elseif web then
                 local file = (hasFolderFunctions and "hydroxide/user/" .. user .. '/' .. asset .. ".lua") or ("hydroxide-" .. user .. '-' .. asset:gsub('/', '-') .. ".lua")
                 local ran, result = pcall(readFile, file)
