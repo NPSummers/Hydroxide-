@@ -1,7 +1,8 @@
 ## Script
 ```lua
-local owner = "Upbolt"
-local branch = "revision"
+local owner = "NPSummers"
+local repo = "Hydroxide-"
+local branch = "main"
 
 local function fetch(url)
     if request then
@@ -16,7 +17,7 @@ local function fetch(url)
 end
 
 local function webImport(file)
-    return loadstring(fetch(("https://raw.githubusercontent.com/%s/Hydroxide/%s/%s.lua"):format(owner, branch, file)), file .. '.lua')()
+    return loadstring(fetch(("https://raw.githubusercontent.com/%s/%s/%s/%s.lua"):format(owner, repo, branch, file)), file .. '.lua')()
 end
 
 webImport("init")
@@ -35,7 +36,7 @@ Requires an executor that implements the sUNC API.
 <p align="center">
     <img src="https://cdn.discordapp.com/attachments/633472429917995038/722143730500501534/Hydroxide_Logo.png"/>
     </br>
-    <img src="https://raw.githubusercontent.com/Upbolt/Hydroxide/revision/github-assets/ui.png" width="677px"/>
+    <img src="https://raw.githubusercontent.com/NPSummers/Hydroxide-/main/github-assets/ui.png" width="677px"/>
 </p>
 
 ## Features
