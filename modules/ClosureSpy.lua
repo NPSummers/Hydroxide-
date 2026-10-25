@@ -1,5 +1,9 @@
 local ClosureSpy = {}
 
+local getCallingScript = getCallingScript
+local getRenv = getRenv or getrenv
+local hookEnvironment = setmetatable({}, { __index = getRenv and getRenv() or {} })
+
 local requiredMethods = {
     ["hookFunction"] = true,
     ["newCClosure"] = true,
@@ -17,8 +21,7 @@ local requiredMethods = {
 
 local eventCallback
 
--- Define as global function in order to reduce upvalue count in hooks
-function log(hook, callingScript, ...)
+local function log(hook, callingScript, ...)
     local vargs = {...}
     
     if eventCallback and not hook:AreArgsIgnored(vargs) then
@@ -30,6 +33,8 @@ function log(hook, callingScript, ...)
     end
 end
 
+setfenv(log, hookEnvironment)
+
 local function setEvent(callback)
     if not eventCallback then
         eventCallback = callback
@@ -38,7 +43,7 @@ end
 
 local Hook = {}
 local hookMap = {}
-hookCache = {}
+local hookCache = {}
 
 function Hook.new(closure)
     local hook = {}
@@ -51,7 +56,7 @@ function Hook.new(closure)
     end
 
     local wrap = { hook, data }
-    hookCache[data] = hookFunction(data, function(...)
+    local function hookCallback(...)
         local vargs = {...}
         local uHook = wrap[1]
         local uData = wrap[2]
@@ -63,7 +68,10 @@ function Hook.new(closure)
         if not uHook.Blocked and not uHook:AreArgsBlocked(vargs) then
             return hookCache[uData](...)
         end
-    end)
+    end
+
+    setfenv(hookCallback, hookEnvironment)
+    hookCache[data] = hookFunction(data, hookCallback)
 
     closure.Data = hookCache[data]
 

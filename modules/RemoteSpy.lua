@@ -1,6 +1,37 @@
 local RemoteSpy = {}
 local Remote = import("objects/Remote")
 
+local select = select
+local typeof = typeof
+local pcall = pcall
+local getCallingScript = getCallingScript
+local getInfo = getInfo
+local getNamecallMethod = getNamecallMethod
+local isLClosure = isLClosure
+local isXClosure = isXClosure
+local getRenv = getRenv or getrenv
+
+local hookEnvironment = setmetatable({}, { __index = getRenv and getRenv() or {} })
+
+local function sanitizeHook(callback)
+    setfenv(callback, hookEnvironment)
+    return callback
+end
+
+local function sanitizeCClosure(callback)
+    return newCClosure(sanitizeHook(callback))
+end
+
+local function getCallerFunction()
+    for level = 2, 10 do
+        local info = getInfo(level)
+
+        if info and info.func and isLClosure(info.func) and not isXClosure(info.func) then
+            return info.func
+        end
+    end
+end
+
 local requiredMethods = {
     ["checkCaller"] = true,
     ["newCClosure"] = true,
@@ -12,6 +43,8 @@ local requiredMethods = {
     ["setClipboard"] = true,
     ["getNamecallMethod"] = true,
     ["getCallingScript"] = true,
+    ["isLClosure"] = true,
+    ["isXClosure"] = true,
 }
 
 local remoteMethods = {
@@ -49,7 +82,7 @@ local function connectEvent(callback)
 end
 
 local nmcTrampoline
-nmcTrampoline = hookMetaMethod(game, "__namecall", function(...)
+nmcTrampoline = hookMetaMethod(game, "__namecall", sanitizeCClosure(function(...)
     local instance = ...
     
     if typeof(instance) ~= "Instance" then
@@ -82,7 +115,7 @@ nmcTrampoline = hookMetaMethod(game, "__namecall", function(...)
             local call = {
                 script = getCallingScript(),
                 args = vargs,
-                func = getInfo(3).func
+                func = getCallerFunction()
             }
 
             remote.IncrementCalls(remote, call)
@@ -95,11 +128,9 @@ nmcTrampoline = hookMetaMethod(game, "__namecall", function(...)
     end
 
     return nmcTrampoline(...)
-end)
+end))
 
 -- vuln fix
-
-local pcall = pcall
 
 local function checkPermission(instance)
     if (instance.ClassName) then end
@@ -107,7 +138,7 @@ end
 
 for _name, hook in pairs(methodHooks) do
     local originalMethod
-    originalMethod = hookFunction(hook, newCClosure(function(...)
+    originalMethod = hookFunction(hook, sanitizeCClosure(function(...)
         local instance = ...
 
         if typeof(instance) ~= "Instance" then
@@ -135,7 +166,7 @@ for _name, hook in pairs(methodHooks) do
                 local call = {
                     script = getCallingScript(),
                     args = vargs,
-                    func = getInfo(3).func
+                    func = getCallerFunction()
                 }
     
                 remote:IncrementCalls(call)

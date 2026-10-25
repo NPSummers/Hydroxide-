@@ -189,6 +189,7 @@ local globalMethods = {
     getGc = getgc,
     getInfo = debug.getinfo,
     getSenv = getsenv,
+    getRenv = getrenv,
     getContext = getthreadidentity,
     getConnections = getconnections,
     getScriptClosure = getscriptclosure,
