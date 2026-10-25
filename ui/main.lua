@@ -98,6 +98,21 @@ Collapse.MouseButton1Click:Connect(function()
 end)
 
 Interface.Name = HttpService:GenerateGUID(false)
+Interface.DisplayOrder = 2147483647
+Interface.IgnoreGuiInset = true
+
+if setHiddenProperty then
+	for _, property in ipairs({ "OnTopOfCoreBlur", "IgnoresTitleBarReservation" }) do
+		local ok, success, reason = pcall(setHiddenProperty, Interface, property, true)
+
+		if not ok then
+			warn(("[Hydroxide+] Could not set %s: %s"):format(property, tostring(success)))
+		elseif not success then
+			warn(("[Hydroxide+] Could not set %s: %s"):format(property, tostring(reason)))
+		end
+	end
+end
+
 if getHui then
 	Interface.Parent = getHui()
 else

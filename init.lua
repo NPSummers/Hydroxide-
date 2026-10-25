@@ -206,6 +206,7 @@ local globalMethods = {
     getMetatable = getrawmetatable,
     getHui = gethui,
     setClipboard = setclipboard or toclipboard,
+    setHiddenProperty = sethiddenproperty,
     setConstant = debug.setconstant,
     setContext = setthreadidentity,
     setUpvalue = debug.setupvalue,
