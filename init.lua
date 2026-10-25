@@ -5,8 +5,9 @@ if oh then
 end
 
 local web = true
-local user = "Upbolt" -- change if you're using a fork
-local branch = "revision"
+local user = "NPSummers"
+local repo = "Hydroxide-"
+local branch = "main"
 local importCache = {}
 
 local function httpGet(url)
@@ -180,13 +181,35 @@ end
 useMethods(globalMethods)
 
 local HttpService = game:GetService("HttpService")
-local releaseInfo = HttpService:JSONDecode(httpGet("https://api.github.com/repos/" .. user .. "/Hydroxide/releases"))[1]
+
+local function getVersion()
+    local success, releases = pcall(function()
+        return HttpService:JSONDecode(httpGet("https://api.github.com/repos/" .. user .. "/" .. repo .. "/releases"))
+    end)
+    local release = success and releases and releases[1]
+
+    if release and release.tag_name then
+        return release.tag_name
+    end
+
+    local commitSuccess, commit = pcall(function()
+        return HttpService:JSONDecode(httpGet("https://api.github.com/repos/" .. user .. "/" .. repo .. "/commits/" .. branch))
+    end)
+
+    if commitSuccess and commit and commit.sha then
+        return commit.sha
+    end
+
+    return "unknown"
+end
+
+local version = getVersion()
 
 if readFile and writeFile then
     local hasFolderFunctions = (isFolder and makeFolder) ~= nil
     local ran, result = pcall(readFile, "__oh_version.txt")
 
-    if not ran or releaseInfo.tag_name ~= result then
+    if not ran or version ~= result then
         if hasFolderFunctions then
             local function createFolder(path)
                 if not isFolder(path) then
@@ -220,13 +243,13 @@ if readFile and writeFile then
                     local content
 
                     if (isFile and not isFile(file)) or not importCache[asset] then
-                        content = httpGet("https://raw.githubusercontent.com/" .. user .. "/Hydroxide/" .. branch .. '/' .. asset .. ".lua")
+                        content = httpGet("https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. branch .. '/' .. asset .. ".lua")
                         writeFile(file, content)
                     else
                         local ran, result = pcall(readFile, file)
 
                         if (not ran) or not importCache[asset] then
-                            content = httpGet("https://raw.githubusercontent.com/" .. user .. "/Hydroxide/" .. branch .. '/' .. asset .. ".lua")
+                            content = httpGet("https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. branch .. '/' .. asset .. ".lua")
                             writeFile(file, content)
                         else
                             content = result
@@ -235,7 +258,7 @@ if readFile and writeFile then
 
                     assets = { loadstring(content, asset .. '.lua')() }
                 else
-                    assets = { loadstring(httpGet("https://raw.githubusercontent.com/" .. user .. "/Hydroxide/" .. branch .. '/' .. asset .. ".lua"), asset .. '.lua')() }
+                    assets = { loadstring(httpGet("https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. branch .. '/' .. asset .. ".lua"), asset .. '.lua')() }
                 end
             else
                 assets = { loadstring(readFile("hydroxide/" .. asset .. ".lua"), asset .. '.lua')() }
@@ -245,8 +268,8 @@ if readFile and writeFile then
             return unpack(assets)
         end
 
-        writeFile("__oh_version.txt", releaseInfo.tag_name)
-    elseif ran and releaseInfo.tag_name == result then
+        writeFile("__oh_version.txt", version)
+    elseif ran and version == result then
         function environment.import(asset)
             if importCache[asset] then
                 return unpack(importCache[asset])
@@ -260,7 +283,7 @@ if readFile and writeFile then
                 local content
 
                 if not ran then
-                    content = httpGet("https://raw.githubusercontent.com/" .. user .. "/Hydroxide/" .. branch .. '/' .. asset .. ".lua")
+                    content = httpGet("https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. branch .. '/' .. asset .. ".lua")
                     writeFile(file, content)
                 else
                     content = result
