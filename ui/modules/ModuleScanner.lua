@@ -21,7 +21,7 @@ local moduleList = List.new(Results)
 local moduleLogs = {}
 local selectedLog
 
-local pathContext = ContextMenuButton.new("rbxassetid://4891705738", "Get Module Path")
+local pathContext = ContextMenuButton.new(oh.getIconAsset("4891705738"), "Get Module Path")
 moduleList:BindContextMenu(ContextMenu.new({ pathContext }))
 
 pathContext:SetCallback(function()

@@ -9,6 +9,7 @@ local user = "NPSummers"
 local repo = "Hydroxide-"
 local branch = "main"
 local importCache = {}
+local iconCache = {}
 
 local function httpGet(url)
     if request then
@@ -42,12 +43,67 @@ local function getAssetFile(name)
     return path
 end
 
+local function getIconAsset(id)
+    if iconCache[id] then
+        return iconCache[id]
+    end
+
+    local folder = "hydroxide/assets/icons"
+    local path = folder .. "/" .. id .. ".png"
+
+    if isFolder and makeFolder and not isFolder("hydroxide/assets") then
+        makeFolder("hydroxide/assets")
+    end
+
+    if isFolder and makeFolder and not isFolder(folder) then
+        makeFolder(folder)
+    end
+
+    if not (isFile and isFile(path)) then
+        writeFile(path, httpGet("https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. branch .. "/github-assets/icons/" .. id .. ".png"))
+    end
+
+    iconCache[id] = getcustomasset(path)
+    return iconCache[id]
+end
+
 local function unwrapAsset(object)
     while object and object.ClassName == "Model" and #object:GetChildren() == 1 do
         object = object:GetChildren()[1]
     end
 
     return object
+end
+
+local function localizeImages(root)
+    local objects = { root }
+    for _, object in ipairs(root:GetDescendants()) do
+        objects[#objects + 1] = object
+    end
+
+    for _, object in ipairs(objects) do
+        local properties
+        if object:IsA("ImageLabel") or object:IsA("ImageButton") then
+            properties = { "Image", "HoverImage", "PressedImage", "DisabledImage" }
+        elseif object:IsA("Decal") or object:IsA("Texture") then
+            properties = { "Texture" }
+        end
+
+        if properties then
+            for _, property in ipairs(properties) do
+                local success, value = pcall(function()
+                    return object[property]
+                end)
+                local id = success and tostring(value):match("[?&]id=(%d+)") or success and tostring(value):match("rbxassetid://(%d+)")
+
+                if id then
+                    object[property] = getIconAsset(id)
+                end
+            end
+        end
+    end
+
+    return root
 end
 
 local function loadAsset(asset)
@@ -71,7 +127,7 @@ local function loadAsset(asset)
 
                 if loadSuccess and object then
                     print(("[Hydroxide] Loaded %s with InsertService:LoadLocalAsset"):format(name))
-                    return unwrapAsset(object)
+                    return localizeImages(unwrapAsset(object))
                 end
 
                 local objectsSuccess, objects = pcall(function()
@@ -80,7 +136,7 @@ local function loadAsset(asset)
 
                 if objectsSuccess and objects and objects[1] then
                     print(("[Hydroxide] Loaded %s with game:GetObjects"):format(name))
-                    return unwrapAsset(objects[1])
+                    return localizeImages(unwrapAsset(objects[1]))
                 end
 
                 reason = (not loadSuccess and tostring(object)) or (not objectsSuccess and tostring(objects)) or "local loader returned nil"
@@ -92,8 +148,7 @@ local function loadAsset(asset)
         end
     end
 
-    warn(("[Hydroxide] Could not load %s locally (%s), pulling from Roblox"):format(asset, reason))
-    return game:GetObjects(asset)[1]
+    error(("[Hydroxide] Could not load %s locally (%s)"):format(asset, reason))
 end
 
 local function hasMethods(methods)
@@ -179,18 +234,19 @@ environment.oh = {
     Hooks = {},
     Cache = importCache,
     Methods = globalMethods,
+    getIconAsset = getIconAsset,
     Constants = {
         Types = {
-            ["nil"] = "rbxassetid://4800232219",
-            table = "rbxassetid://4666594276",
-            string = "rbxassetid://4666593882",
-            number = "rbxassetid://4666593882",
-            boolean = "rbxassetid://4666593882",
-            userdata = "rbxassetid://4666594723",
-            vector = "rbxassetid://4666594723",
-            ["function"] = "rbxassetid://4666593447",
-            ["thread"] = "rbxassetid://4666593447",
-            ["integral"] = "rbxassetid://4666593882"
+            ["nil"] = getIconAsset("4800232219"),
+            table = getIconAsset("4666594276"),
+            string = getIconAsset("4666593882"),
+            number = getIconAsset("4666593882"),
+            boolean = getIconAsset("4666593882"),
+            userdata = getIconAsset("4666594723"),
+            vector = getIconAsset("4666594723"),
+            ["function"] = getIconAsset("4666593447"),
+            ["thread"] = getIconAsset("4666593447"),
+            ["integral"] = getIconAsset("4666593882")
         },
         Syntax = {
             ["nil"] = Color3.fromRGB(244, 135, 113),

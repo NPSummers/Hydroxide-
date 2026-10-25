@@ -48,13 +48,13 @@ local NewConditionIndex = NewConditionContent.Index
 local currentClosures = Methods.CurrentClosures
 
 local icons = {
-    type = "rbxassetid://4702850565",
-    status = "rbxassetid://4909102841",
-    valueType = "rbxassetid://4702850565",
-    block = "rbxassetid://4891641806",
-    unblock = "rbxassetid://4891642508",
-    ignore = "rbxassetid://4842578510",
-    unignore = "rbxassetid://4842578818"
+    type = oh.getIconAsset("4702850565"),
+    status = oh.getIconAsset("4909102841"),
+    valueType = oh.getIconAsset("4702850565"),
+    block = oh.getIconAsset("4891641806"),
+    unblock = oh.getIconAsset("4891642508"),
+    ignore = oh.getIconAsset("4842578510"),
+    unignore = oh.getIconAsset("4842578818")
 }
 
 local constants = {
@@ -82,25 +82,25 @@ local selected = {
     conditions = {}
 }
 
-local conditionContext = ContextMenuButton.new("rbxassetid://4891633802", "Call Conditions")
-local clearContext = ContextMenuButton.new("rbxassetid://4892169181", "Clear Calls")
-local ignoreContext = ContextMenuButton.new("rbxassetid://4842578510", "Ignore Calls")
-local blockContext = ContextMenuButton.new("rbxassetid://4891641806", "Block Calls")
-local removeContext = ContextMenuButton.new("rbxassetid://4702831188", "Remove Log")
+local conditionContext = ContextMenuButton.new(oh.getIconAsset("4891633802"), "Call Conditions")
+local clearContext = ContextMenuButton.new(oh.getIconAsset("4892169181"), "Clear Calls")
+local ignoreContext = ContextMenuButton.new(oh.getIconAsset("4842578510"), "Ignore Calls")
+local blockContext = ContextMenuButton.new(oh.getIconAsset("4891641806"), "Block Calls")
+local removeContext = ContextMenuButton.new(oh.getIconAsset("4702831188"), "Remove Log")
 
-local callingScriptContext = ContextMenuButton.new("rbxassetid://4800244808", "Get Calling Script")
-local spyClosureContext = ContextMenuButton.new("rbxassetid://4666593447", "Spy Calling Function")
+local callingScriptContext = ContextMenuButton.new(oh.getIconAsset("4800244808"), "Get Calling Script")
+local spyClosureContext = ContextMenuButton.new(oh.getIconAsset("4666593447"), "Spy Calling Function")
 
-local removeConditionContext = ContextMenuButton.new("rbxassetid://4702831188", "Remove Condition")
+local removeConditionContext = ContextMenuButton.new(oh.getIconAsset("4702831188"), "Remove Condition")
 
-local clearContextSelected = ContextMenuButton.new("rbxassetid://4892169181", "Clear Calls")
-local ignoreContextSelected = ContextMenuButton.new("rbxassetid://4842578510", "Ignore Calls")
-local blockContextSelected = ContextMenuButton.new("rbxassetid://4891641806", "Block Calls")
-local unignoreContextSelected = ContextMenuButton.new("rbxassetid://4842578818", "Unignore Calls")
-local unblockContextSelected = ContextMenuButton.new("rbxassetid://4891642508", "Unblock Calls")
-local removeContextSelected = ContextMenuButton.new("rbxassetid://4702831188", "Remove Logs")
+local clearContextSelected = ContextMenuButton.new(oh.getIconAsset("4892169181"), "Clear Calls")
+local ignoreContextSelected = ContextMenuButton.new(oh.getIconAsset("4842578510"), "Ignore Calls")
+local blockContextSelected = ContextMenuButton.new(oh.getIconAsset("4891641806"), "Block Calls")
+local unignoreContextSelected = ContextMenuButton.new(oh.getIconAsset("4842578818"), "Unignore Calls")
+local unblockContextSelected = ContextMenuButton.new(oh.getIconAsset("4891642508"), "Unblock Calls")
+local removeContextSelected = ContextMenuButton.new(oh.getIconAsset("4702831188"), "Remove Logs")
 
-local removeConditionContextSelected = ContextMenuButton.new("rbxassetid://4702831188", "Remove Conditions")
+local removeConditionContextSelected = ContextMenuButton.new(oh.getIconAsset("4702831188"), "Remove Conditions")
 
 local closureListMenu = ContextMenu.new({ conditionContext, clearContext, ignoreContext, blockContext, removeContext })
 local closureListMenuSelected = ContextMenu.new({ clearContextSelected, ignoreContextSelected, unignoreContextSelected, blockContextSelected, unblockContextSelected, removeContextSelected })

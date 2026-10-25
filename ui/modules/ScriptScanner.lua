@@ -55,7 +55,7 @@ local constantsList = List.new(ConstantsResults)
 local scriptLogs = {}
 local selected = {}
 local icons = {
-    LocalScript = "rbxassetid://4800244808"
+    LocalScript = oh.getIconAsset("4800244808")
 }
 
 local constants = {
@@ -63,7 +63,7 @@ local constants = {
     textWidth = Vector2.new(133742069, 20)
 }
 
-local pathContext = ContextMenuButton.new("rbxassetid://4891705738", "Get Script Path")
+local pathContext = ContextMenuButton.new(oh.getIconAsset("4891705738"), "Get Script Path")
 scriptList:BindContextMenu(ContextMenu.new({ pathContext }))
 
 pathContext:SetCallback(function()

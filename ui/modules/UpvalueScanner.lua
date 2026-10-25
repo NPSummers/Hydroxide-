@@ -45,16 +45,16 @@ local selectedUpvalue
 local selectedUpvalueLog
 local selectedElement
 
-local spyClosureContext = ContextMenuButton.new("rbxassetid://4666593447", "Spy Closure")
-local viewUpvaluesContext = ContextMenuButton.new("rbxassetid://5179169654", "View All Upvalues")
-local changeUpvalueContext = ContextMenuButton.new("rbxassetid://5458573463", "Change Upvalue")
-local changeTableContext = ContextMenuButton.new("rbxassetid://5458573463", "Change Upvalue")
-local viewElementsContext = ContextMenuButton.new("rbxassetid://5179169654", "View All Elements")
-local changeElementContext = ContextMenuButton.new("rbxassetid://5458573463", "Change Element")
-local upvalueScriptContext = ContextMenuButton.new("rbxassetid://4800244808", "Generate Script")
-local tableScriptContext = ContextMenuButton.new("rbxassetid://4800244808", "Generate Script")
-local elementScriptContext = ContextMenuButton.new("rbxassetid://4800244808", "Generate Script")
-local getScriptContext = ContextMenuButton.new("rbxassetid://4891705738", "Get Script Path")
+local spyClosureContext = ContextMenuButton.new(oh.getIconAsset("4666593447"), "Spy Closure")
+local viewUpvaluesContext = ContextMenuButton.new(oh.getIconAsset("5179169654"), "View All Upvalues")
+local changeUpvalueContext = ContextMenuButton.new(oh.getIconAsset("5458573463"), "Change Upvalue")
+local changeTableContext = ContextMenuButton.new(oh.getIconAsset("5458573463"), "Change Upvalue")
+local viewElementsContext = ContextMenuButton.new(oh.getIconAsset("5179169654"), "View All Elements")
+local changeElementContext = ContextMenuButton.new(oh.getIconAsset("5458573463"), "Change Element")
+local upvalueScriptContext = ContextMenuButton.new(oh.getIconAsset("4800244808"), "Generate Script")
+local tableScriptContext = ContextMenuButton.new(oh.getIconAsset("4800244808"), "Generate Script")
+local elementScriptContext = ContextMenuButton.new(oh.getIconAsset("4800244808"), "Generate Script")
+local getScriptContext = ContextMenuButton.new(oh.getIconAsset("4891705738"), "Get Script Path")
 
 local closureContextMenu = ContextMenu.new({ spyClosureContext, viewUpvaluesContext, getScriptContext })
 local tableContextMenu = ContextMenu.new({ changeTableContext, viewElementsContext, tableScriptContext })
