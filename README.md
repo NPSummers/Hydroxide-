@@ -26,7 +26,7 @@ webImport("ui/main")
 
 Requires an executor that implements the sUNC API.
 
-# Hydroxide
+# Hydroxide+
 <i>Lua runtime introspection and network capturing tool for games on the Roblox engine.</i>
 
 ~~Report issues to our Discord server: https://discord.gg/DJxBwAX~~
@@ -67,4 +67,3 @@ More to come, soon.
 <p align="center">
     <img src="https://i.gyazo.com/63afdd764cdca533af5ebca843217a7e.gif" />
 </p>
-

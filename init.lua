@@ -65,7 +65,7 @@ local function getIconAsset(id)
     end
 
     if not rawWriteFile then
-        error("[Hydroxide] writefile is unavailable; cannot cache icon " .. id)
+        error("[Hydroxide+] writefile is unavailable; cannot cache icon " .. id)
     end
 
     if not (rawIsFile and rawIsFile(path)) then
@@ -140,7 +140,6 @@ local function loadAsset(asset)
                 end)
 
                 if loadSuccess and object then
-                    print(("[Hydroxide] Loaded %s with InsertService:LoadLocalAsset"):format(name))
                     return localizeImages(unwrapAsset(object))
                 end
 
@@ -149,7 +148,6 @@ local function loadAsset(asset)
                 end)
 
                 if objectsSuccess and objects and objects[1] then
-                    print(("[Hydroxide] Loaded %s with game:GetObjects"):format(name))
                     return localizeImages(unwrapAsset(objects[1]))
                 end
 
@@ -162,7 +160,7 @@ local function loadAsset(asset)
         end
     end
 
-    error(("[Hydroxide] Could not load %s locally (%s)"):format(asset, reason))
+    error(("[Hydroxide+] Could not load %s locally (%s)"):format(asset, reason))
 end
 
 local function hasMethods(methods)
@@ -348,7 +346,7 @@ local function getVersion()
 end
 
 local version = getVersion()
-print(("[Hydroxide] init.lua loaded - commit %s"):format(version))
+print(("[Hydroxide+] init.lua loaded - commit %s"):format(version))
 
 if readFile and writeFile then
     local hasFolderFunctions = (isFolder and makeFolder) ~= nil

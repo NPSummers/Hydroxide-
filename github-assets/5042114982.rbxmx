@@ -12,7 +12,7 @@
 			<BinaryString name="AttributesSerialize"></BinaryString>
 			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 			<bool name="DefinesCapabilities">false</bool>
-			<string name="Name">Hydroxide C Assets</string>
+			<string name="Name">Hydroxide+ C Assets</string>
 			<BinaryString name="SerializedOverrides"></BinaryString>
 			<int64 name="SourceAssetId">5042114982</int64>
 			<SharedString name="Tags">yuZpQdnvvUBOTYh1jqZ2cA==</SharedString>

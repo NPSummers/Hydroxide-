@@ -21,7 +21,7 @@
 			<BinaryString name="AttributesSerialize"></BinaryString>
 			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
 			<bool name="DefinesCapabilities">false</bool>
-			<string name="Name">Hydroxide C</string>
+			<string name="Name">Hydroxide+</string>
 			<BinaryString name="SerializedOverrides"></BinaryString>
 			<int64 name="SourceAssetId">11389137937</int64>
 			<SharedString name="Tags">yuZpQdnvvUBOTYh1jqZ2cA==</SharedString>
@@ -2545,7 +2545,7 @@
 						<int name="MaxVisibleGraphemes">-1</int>
 						<string name="OpenTypeFeatures"></string>
 						<bool name="RichText">false</bool>
-						<string name="Text">Hydroxide c.1</string>
+						<string name="Text">Hydroxide+</string>
 						<Color3 name="TextColor3">
 							<R>1</R>
 							<G>1</G>
@@ -10296,7 +10296,7 @@
 								<int name="MaxVisibleGraphemes">-1</int>
 								<string name="OpenTypeFeatures"></string>
 								<bool name="RichText">false</bool>
-								<string name="Text">Welcome to Hydroxide</string>
+								<string name="Text">Welcome to Hydroxide+</string>
 								<Color3 name="TextColor3">
 									<R>1</R>
 									<G>1</G>
