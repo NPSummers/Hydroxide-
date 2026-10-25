@@ -2,7 +2,6 @@ local ModuleScanner = {}
 local ModuleScript = import("objects/ModuleScript")
 
 local requiredMethods = {
-    ["getMenv"] = true,
     ["getProtos"] = true,
     ["getConstants"] = true,
     ["getScriptClosure"] = true,

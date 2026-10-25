@@ -9,6 +9,18 @@ local user = "Upbolt" -- change if you're using a fork
 local branch = "revision"
 local importCache = {}
 
+local function httpGet(url)
+    if request then
+        local success, response = pcall(request, { Url = url, Method = "GET" })
+
+        if success and response and response.Success then
+            return response.Body
+        end
+    end
+
+    return game:HttpGet(url)
+end
+
 local function hasMethods(methods)
     for name in pairs(methods) do
         if not environment[name] then
@@ -27,55 +39,45 @@ local function useMethods(module)
     end
 end
 
-if Window and PROTOSMASHER_LOADED then
-    getgenv().get_script_function = nil
-end
-
 local globalMethods = {
     checkCaller = checkcaller,
     newCClosure = newcclosure,
-    hookFunction = hookfunction or detour_function,
-    getGc = getgc or get_gc_objects,
-    getInfo = debug.getinfo or getinfo,
+    hookFunction = hookfunction,
+    restoreFunction = restorefunction,
+    getGc = getgc,
+    getInfo = debug.getinfo,
     getSenv = getsenv,
-    getMenv = getmenv or getsenv,
-    getContext = getthreadcontext or get_thread_context or (syn and syn.get_thread_identity),
-    getConnections = get_signal_cons or getconnections,
-    getScriptClosure = getscriptclosure or get_script_function,
-    getNamecallMethod = getnamecallmethod or get_namecall_method,
-    getCallingScript = getcallingscript or get_calling_script,
-    getLoadedModules = getloadedmodules or get_loaded_modules,
-    getConstants = debug.getconstants or getconstants or getconsts,
-    getUpvalues = debug.getupvalues or getupvalues or getupvals,
-    getProtos = debug.getprotos or getprotos,
-    getStack = debug.getstack or getstack,
-    getConstant = debug.getconstant or getconstant or getconst,
-    getUpvalue = debug.getupvalue or getupvalue or getupval,
-    getProto = debug.getproto or getproto,
-    getMetatable = getrawmetatable or debug.getmetatable,
-    getHui = get_hidden_gui or gethui,
-    setClipboard = setclipboard or writeclipboard,
-    setConstant = debug.setconstant or setconstant or setconst,
-    setContext = setthreadcontext or set_thread_context or (syn and syn.set_thread_identity),
-    setUpvalue = debug.setupvalue or setupvalue or setupval,
-    setStack = debug.setstack or setstack,
-    setReadOnly = setreadonly or (make_writeable and function(table, readonly) if readonly then make_readonly(table) else make_writeable(table) end end),
-    isLClosure = islclosure or is_l_closure or (iscclosure and function(closure) return not iscclosure(closure) end),
-    isReadOnly = isreadonly or is_readonly,
-    isXClosure = is_synapse_function or issentinelclosure or is_protosmasher_closure or is_sirhurt_closure or iselectronfunction or istempleclosure or checkclosure,
-    hookMetaMethod = hookmetamethod or (hookfunction and function(object, method, hook) return hookfunction(getMetatable(object)[method], hook) end),
+    getContext = getthreadidentity,
+    getConnections = getconnections,
+    getScriptClosure = getscriptclosure,
+    getNamecallMethod = getnamecallmethod,
+    getCallingScript = getcallingscript,
+    getLoadedModules = getloadedmodules,
+    getConstants = debug.getconstants,
+    getUpvalues = debug.getupvalues,
+    getProtos = debug.getprotos,
+    getStack = debug.getstack,
+    getConstant = debug.getconstant,
+    getUpvalue = debug.getupvalue,
+    getProto = debug.getproto,
+    getMetatable = getrawmetatable,
+    getHui = gethui,
+    setClipboard = setclipboard or toclipboard,
+    setConstant = debug.setconstant,
+    setContext = setthreadidentity,
+    setUpvalue = debug.setupvalue,
+    setStack = debug.setstack,
+    setReadOnly = setreadonly,
+    isLClosure = islclosure,
+    isReadOnly = isreadonly,
+    isXClosure = isexecutorclosure,
+    hookMetaMethod = hookmetamethod,
     readFile = readfile,
     writeFile = writefile,
     makeFolder = makefolder,
     isFolder = isfolder,
     isFile = isfile,
 }
-
-if PROTOSMASHER_LOADED then
-    globalMethods.getConstant = function(closure, index)
-        return globalMethods.getConstants(closure)[index]
-    end
-end
 
 local oldGetUpvalue = globalMethods.getUpvalue
 local oldGetUpvalues = globalMethods.getUpvalues
@@ -133,12 +135,11 @@ environment.oh = {
             event:Disconnect()
         end
 
-        for original, hook in pairs(oh.Hooks) do
-            local hookType = type(hook)
-            if hookType == "function" then
-                hookFunction(hook, original)
-            elseif hookType == "table" then
-                hookFunction(hook.Closure.Data, hook.Original)
+        for original, hooked in pairs(oh.Hooks) do
+            if globalMethods.restoreFunction then
+                globalMethods.restoreFunction(hooked)
+            else
+                globalMethods.hookFunction(hooked, original)
             end
         end
 
@@ -155,37 +156,31 @@ environment.oh = {
     end
 }
 
-if getConnections then 
-    for __, connection in pairs(getConnections(game:GetService("ScriptContext").Error)) do
+if globalMethods.getConnections and globalMethods.getMetatable and globalMethods.setReadOnly and globalMethods.newCClosure then
+    for _i, connection in pairs(globalMethods.getConnections(game:GetService("ScriptContext").Error)) do
+        local metatable = globalMethods.getMetatable(connection)
+        local oldIndex = metatable and metatable.__index
 
-        local conn = getrawmetatable(connection)
-        local old = conn and conn.__index
-        
-        if PROTOSMASHER_LOADED ~= nil then setwriteable(conn) else setReadOnly(conn, false) end
-        
-        if old then
-            conn.__index = newcclosure(function(t, k)
-                if k == "Connected" then
+        if oldIndex then
+            globalMethods.setReadOnly(metatable, false)
+            metatable.__index = globalMethods.newCClosure(function(object, key)
+                if key == "Connected" then
                     return true
                 end
-                return old(t, k)
+
+                return oldIndex(object, key)
             end)
+            globalMethods.setReadOnly(metatable, true)
         end
 
-        if PROTOSMASHER_LOADED ~= nil then
-            setReadOnly(conn)
-            connection:Disconnect()
-        else
-            setReadOnly(conn, true)
-            connection:Disable()
-        end
+        connection:Disable()
     end
 end
 
 useMethods(globalMethods)
 
 local HttpService = game:GetService("HttpService")
-local releaseInfo = HttpService:JSONDecode(game:HttpGetAsync("https://api.github.com/repos/" .. user .. "/Hydroxide/releases"))[1]
+local releaseInfo = HttpService:JSONDecode(httpGet("https://api.github.com/repos/" .. user .. "/Hydroxide/releases"))[1]
 
 if readFile and writeFile then
     local hasFolderFunctions = (isFolder and makeFolder) ~= nil
@@ -225,13 +220,13 @@ if readFile and writeFile then
                     local content
 
                     if (isFile and not isFile(file)) or not importCache[asset] then
-                        content = game:HttpGetAsync("https://raw.githubusercontent.com/" .. user .. "/Hydroxide/" .. branch .. '/' .. asset .. ".lua")
+                        content = httpGet("https://raw.githubusercontent.com/" .. user .. "/Hydroxide/" .. branch .. '/' .. asset .. ".lua")
                         writeFile(file, content)
                     else
                         local ran, result = pcall(readFile, file)
 
                         if (not ran) or not importCache[asset] then
-                            content = game:HttpGetAsync("https://raw.githubusercontent.com/" .. user .. "/Hydroxide/" .. branch .. '/' .. asset .. ".lua")
+                            content = httpGet("https://raw.githubusercontent.com/" .. user .. "/Hydroxide/" .. branch .. '/' .. asset .. ".lua")
                             writeFile(file, content)
                         else
                             content = result
@@ -240,7 +235,7 @@ if readFile and writeFile then
 
                     assets = { loadstring(content, asset .. '.lua')() }
                 else
-                    assets = { loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/" .. user .. "/Hydroxide/" .. branch .. '/' .. asset .. ".lua"), asset .. '.lua')() }
+                    assets = { loadstring(httpGet("https://raw.githubusercontent.com/" .. user .. "/Hydroxide/" .. branch .. '/' .. asset .. ".lua"), asset .. '.lua')() }
                 end
             else
                 assets = { loadstring(readFile("hydroxide/" .. asset .. ".lua"), asset .. '.lua')() }
@@ -265,7 +260,7 @@ if readFile and writeFile then
                 local content
 
                 if not ran then
-                    content = game:HttpGetAsync("https://raw.githubusercontent.com/" .. user .. "/Hydroxide/" .. branch .. '/' .. asset .. ".lua")
+                    content = httpGet("https://raw.githubusercontent.com/" .. user .. "/Hydroxide/" .. branch .. '/' .. asset .. ".lua")
                     writeFile(file, content)
                 else
                     content = result

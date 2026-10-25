@@ -23,7 +23,7 @@ local function scan(query)
                 script:IsA("LocalScript") and 
                 script.Name:lower():find(query) and
                 getScriptClosure(script) and
-                pcall(function() getsenv(script) end)
+                pcall(function() getSenv(script) end)
             then
                 scripts[script] = LocalScript.new(script)
             end

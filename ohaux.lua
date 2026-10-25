@@ -1,13 +1,13 @@
 local aux = {}
 
 local getGc = getgc
-local getInfo = debug.getinfo or getinfo
-local getUpvalue = debug.getupvalue or getupvalue or getupval
-local getConstants = debug.getconstants or getconstants or getconsts
-local isXClosure = is_synapse_function or issentinelclosure or is_protosmasher_closure or is_sirhurt_closure or istempleclosure or checkclosure
-local isLClosure = islclosure or is_l_closure or (iscclosure and function(f) return not iscclosure(f) end)
+local getInfo = debug.getinfo
+local getUpvalue = debug.getupvalue
+local getConstants = debug.getconstants
+local isXClosure = isexecutorclosure
+local isLClosure = islclosure
 
-assert(getGc and getInfo and getConstants and isXClosure, "Your exploit is not supported")
+assert(getGc and getInfo and getConstants and isXClosure and isLClosure, "This executor does not support the required sUNC functions")
 
 local placeholderUserdataConstant = newproxy(false)
 

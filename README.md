@@ -3,13 +3,27 @@
 local owner = "Upbolt"
 local branch = "revision"
 
+local function fetch(url)
+    if request then
+        local success, response = pcall(request, { Url = url, Method = "GET" })
+
+        if success and response and response.Success then
+            return response.Body
+        end
+    end
+
+    return game:HttpGet(url)
+end
+
 local function webImport(file)
-    return loadstring(game:HttpGetAsync(("https://raw.githubusercontent.com/%s/Hydroxide/%s/%s.lua"):format(owner, branch, file)), file .. '.lua')()
+    return loadstring(fetch(("https://raw.githubusercontent.com/%s/Hydroxide/%s/%s.lua"):format(owner, branch, file)), file .. '.lua')()
 end
 
 webImport("init")
 webImport("ui/main")
 ```
+
+Requires an executor that implements the sUNC API.
 
 # Hydroxide
 <i>Lua runtime introspection and network capturing tool for games on the Roblox engine.</i>
