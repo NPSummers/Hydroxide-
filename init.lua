@@ -228,6 +228,8 @@ globalMethods.getUpvalues = function(closure)
     return oldGetUpvalues(closure)
 end
 
+useMethods(globalMethods)
+
 environment.hasMethods = hasMethods
 environment.oh = {
     Events = {},
@@ -307,8 +309,6 @@ if globalMethods.getConnections and globalMethods.getMetatable and globalMethods
         connection:Disable()
     end
 end
-
-useMethods(globalMethods)
 
 local HttpService = game:GetService("HttpService")
 
