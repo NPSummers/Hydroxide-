@@ -109,6 +109,11 @@ local function localizeImages(root)
                     object[property] = getIconAsset(id)
                 end
             end
+
+            if object.ScaleType == Enum.ScaleType.Slice and object.SliceCenter.Min.X == 25 and object.SliceCenter.Min.Y == 25 and object.SliceCenter.Max.X == 25 and object.SliceCenter.Max.Y == 25 then
+                object.SliceCenter = Rect.new(512, 512, 512, 512)
+                object.SliceScale = object.SliceScale * 25 / 512
+            end
         end
     end
 
