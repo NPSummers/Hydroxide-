@@ -348,6 +348,7 @@ local function getVersion()
 end
 
 local version = getVersion()
+print(("[Hydroxide] init.lua loaded - commit %s"):format(version))
 
 if readFile and writeFile then
     local hasFolderFunctions = (isFolder and makeFolder) ~= nil
