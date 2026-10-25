@@ -1,4 +1,9 @@
 local environment = assert(getgenv, "<OH> ~ Your exploit is not supported")()
+local rawWriteFile = writefile
+local rawIsFile = isfile
+local rawMakeFolder = makefolder
+local rawIsFolder = isfolder
+local rawGetCustomAsset = getcustomasset
 
 if oh then
     oh.Exit()
@@ -51,19 +56,23 @@ local function getIconAsset(id)
     local folder = "hydroxide/assets/icons"
     local path = folder .. "/" .. id .. ".png"
 
-    if isFolder and makeFolder and not isFolder("hydroxide/assets") then
-        makeFolder("hydroxide/assets")
+    if rawIsFolder and rawMakeFolder and not rawIsFolder("hydroxide/assets") then
+        rawMakeFolder("hydroxide/assets")
     end
 
-    if isFolder and makeFolder and not isFolder(folder) then
-        makeFolder(folder)
+    if rawIsFolder and rawMakeFolder and not rawIsFolder(folder) then
+        rawMakeFolder(folder)
     end
 
-    if not (isFile and isFile(path)) then
-        writeFile(path, httpGet("https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. branch .. "/github-assets/icons/" .. id .. ".png"))
+    if not rawWriteFile then
+        error("[Hydroxide] writefile is unavailable; cannot cache icon " .. id)
     end
 
-    iconCache[id] = getcustomasset(path)
+    if not (rawIsFile and rawIsFile(path)) then
+        rawWriteFile(path, httpGet("https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. branch .. "/github-assets/icons/" .. id .. ".png"))
+    end
+
+    iconCache[id] = rawGetCustomAsset(path)
     return iconCache[id]
 end
 
