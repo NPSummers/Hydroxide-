@@ -1,6 +1,7 @@
 local ClosureSpy = {}
 
 local getCallingScript = getCallingScript
+local setStackHidden = setStackHidden
 local getRenv = getRenv or getrenv
 local hookEnvironment = setmetatable({}, { __index = getRenv and getRenv() or {} })
 
@@ -71,6 +72,11 @@ function Hook.new(closure)
     end
 
     setfenv(hookCallback, hookEnvironment)
+
+    if setStackHidden then
+        pcall(setStackHidden, hookCallback, true)
+    end
+
     hookCache[data] = hookFunction(data, hookCallback)
 
     closure.Data = hookCache[data]

@@ -4,6 +4,7 @@ local Remote = import("objects/Remote")
 local select = select
 local typeof = typeof
 local pcall = pcall
+local setStackHidden = setStackHidden
 local getCallingScript = getCallingScript
 local getInfo = getInfo
 local getNamecallMethod = getNamecallMethod
@@ -19,7 +20,13 @@ local function sanitizeHook(callback)
 end
 
 local function sanitizeCClosure(callback)
-    return newCClosure(sanitizeHook(callback))
+    local closure = newCClosure(sanitizeHook(callback))
+
+    if setStackHidden then
+        pcall(setStackHidden, closure, true)
+    end
+
+    return closure
 end
 
 local function getCallerFunction()

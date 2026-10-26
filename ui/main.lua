@@ -108,7 +108,7 @@ if setHiddenProperty then
 		if not ok then
 			warn(("[Hydroxide+] Could not set %s: %s"):format(property, tostring(success)))
 		elseif not success then
-			warn(("[Hydroxide+] Could not set %s: %s"):format(property, tostring(reason)))
+			warn(("[Hydroxide+] Could not set %s%s"):format(property, reason and ": " .. tostring(reason) or ""))
 		end
 	end
 end

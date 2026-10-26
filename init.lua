@@ -207,6 +207,7 @@ local globalMethods = {
     getHui = gethui,
     setClipboard = setclipboard or toclipboard,
     setHiddenProperty = sethiddenproperty,
+    setStackHidden = setstackhidden,
     setConstant = debug.setconstant,
     setContext = setthreadidentity,
     setUpvalue = debug.setupvalue,
@@ -309,14 +310,20 @@ if globalMethods.getConnections and globalMethods.getMetatable and globalMethods
         local oldIndex = metatable and metatable.__index
 
         if oldIndex then
-            globalMethods.setReadOnly(metatable, false)
-            metatable.__index = globalMethods.newCClosure(function(object, key)
+            local hookedIndex = globalMethods.newCClosure(function(object, key)
                 if key == "Connected" then
                     return true
                 end
 
                 return oldIndex(object, key)
             end)
+
+            if globalMethods.setStackHidden then
+                pcall(globalMethods.setStackHidden, hookedIndex, true)
+            end
+
+            globalMethods.setReadOnly(metatable, false)
+            metatable.__index = hookedIndex
             globalMethods.setReadOnly(metatable, true)
         end
 
