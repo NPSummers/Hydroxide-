@@ -9,6 +9,8 @@ if oh then
     oh.Exit()
 end
 
+print("hi")
+
 local web = true
 local user = "NPSummers"
 local repo = "Hydroxide-"
