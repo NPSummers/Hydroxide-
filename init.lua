@@ -1,4 +1,5 @@
 local environment = assert(getgenv, "<OH> ~ Your exploit is not supported")()
+local rawReadFile = readfile
 local rawWriteFile = writefile
 local rawIsFile = isfile
 local rawMakeFolder = makefolder
@@ -70,6 +71,32 @@ local function rawUrl(path)
     return "https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. sourceRevision .. "/" .. path
 end
 
+local assetRevisionCache
+local assetRevisionsLoaded = false
+
+local function getAssetRevision(path)
+    if not assetRevisionsLoaded then
+        assetRevisionsLoaded = true
+        assetRevisionCache = {}
+
+        local success, tree = pcall(function()
+            local cacheBuster = tostring(os.time and os.time() or tick())
+            local url = "https://api.github.com/repos/" .. user .. "/" .. repo .. "/git/trees/" .. sourceRevision .. "?recursive=1&_=" .. cacheBuster
+            return HttpService:JSONDecode(httpGet(url))
+        end)
+
+        if success and tree and tree.tree then
+            for _, item in ipairs(tree.tree) do
+                if item.type == "blob" and item.path and item.sha then
+                    assetRevisionCache[item.path] = item.sha
+                end
+            end
+        end
+    end
+
+    return assetRevisionCache[path]
+end
+
 local function luaCachePath(asset, hasFolderFunctions)
     if hasFolderFunctions then
         return "hydroxide_plus/user/" .. user .. "/" .. sourceRevision .. "/" .. asset .. ".lua"
@@ -87,17 +114,62 @@ local assetFiles = {
     ["rbxassetid://5042114982"] = "5042114982.rbxmx",
 }
 
+local function ensureAssetFolder(folder)
+    if not (rawIsFolder and rawMakeFolder) then
+        return
+    end
+
+    if not rawIsFolder("hydroxide") then
+        rawMakeFolder("hydroxide")
+    end
+
+    if not rawIsFolder("hydroxide/assets") then
+        rawMakeFolder("hydroxide/assets")
+    end
+
+    if folder ~= "hydroxide/assets" and not rawIsFolder(folder) then
+        rawMakeFolder(folder)
+    end
+end
+
+local function cachedAssetRevision(path)
+    local revisionPath = path .. ".commit"
+
+    if not (rawReadFile and rawIsFile and rawIsFile(revisionPath)) then
+        return
+    end
+
+    local success, revision = pcall(rawReadFile, revisionPath)
+    return success and revision or nil
+end
+
+local function updateAsset(repoPath, path)
+    local hasFile = rawIsFile and rawIsFile(path)
+    local cachedRevision = cachedAssetRevision(path)
+    local remoteRevision = getAssetRevision(repoPath)
+    local expectedRevision = remoteRevision or (isCommit(sourceRevision) and sourceRevision or nil)
+
+    if hasFile and expectedRevision and cachedRevision == expectedRevision then
+        return
+    end
+
+    if not rawWriteFile then
+        error("[Hydroxide+] writefile is unavailable; cannot cache asset " .. repoPath)
+    end
+
+    print(("[Hydroxide+] Downloading asset %s (revision %s)"):format(repoPath, expectedRevision or sourceRevision))
+
+    local content = httpGet(rawUrl(repoPath))
+    rawWriteFile(path, content)
+    rawWriteFile(path .. ".commit", expectedRevision or sourceRevision)
+end
+
 local function getAssetFile(name)
     local folder = "hydroxide/assets"
     local path = folder .. "/" .. name
 
-    if isFolder and makeFolder and not isFolder(folder) then
-        makeFolder(folder)
-    end
-
-    if not (isFile and isFile(path)) then
-        writeFile(path, httpGet(rawUrl("github-assets/" .. name)))
-    end
+    ensureAssetFolder(folder)
+    updateAsset("github-assets/" .. name, path)
 
     return path
 end
@@ -110,21 +182,8 @@ local function getIconAsset(id)
     local folder = "hydroxide/assets/icons"
     local path = folder .. "/" .. id .. ".png"
 
-    if rawIsFolder and rawMakeFolder and not rawIsFolder("hydroxide/assets") then
-        rawMakeFolder("hydroxide/assets")
-    end
-
-    if rawIsFolder and rawMakeFolder and not rawIsFolder(folder) then
-        rawMakeFolder(folder)
-    end
-
-    if not rawWriteFile then
-        error("[Hydroxide+] writefile is unavailable; cannot cache icon " .. id)
-    end
-
-    if not (rawIsFile and rawIsFile(path)) then
-        rawWriteFile(path, httpGet(rawUrl("github-assets/icons/" .. id .. ".png")))
-    end
+    ensureAssetFolder(folder)
+    updateAsset("github-assets/icons/" .. id .. ".png", path)
 
     iconCache[id] = rawGetCustomAsset(path)
     return iconCache[id]
