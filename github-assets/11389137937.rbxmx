@@ -128,9 +128,9 @@
 				<Properties>
 					<Content name="Image"><url>rbxassetid://4623529748</url></Content>
 					<Color3 name="ImageColor3">
-						<R>0.882352948</R>
-						<G>0</G>
-						<B>0</B>
+						<R>0</R>
+						<G>0.882352941</G>
+						<B>0.882352941</B>
 					</Color3>
 					<Vector2 name="ImageRectOffset">
 						<X>0</X>
@@ -6817,9 +6817,9 @@
 											<token name="HorizontalScrollBarInset">0</token>
 											<Content name="MidImage"><url>rbxasset://textures/ui/Scroll/scroll-middle.png</url></Content>
 											<Color3 name="ScrollBarImageColor3">
-												<R>1</R>
-												<G>0</G>
-												<B>0</B>
+												<R>0</R>
+												<G>1</G>
+												<B>1</B>
 											</Color3>
 											<float name="ScrollBarImageTransparency">0</float>
 											<int name="ScrollBarThickness">5</int>
@@ -12721,9 +12721,9 @@
 											<token name="HorizontalScrollBarInset">0</token>
 											<Content name="MidImage"><url>rbxasset://textures/ui/Scroll/scroll-middle.png</url></Content>
 											<Color3 name="ScrollBarImageColor3">
-												<R>1</R>
-												<G>0</G>
-												<B>0</B>
+												<R>0</R>
+												<G>1</G>
+												<B>1</B>
 											</Color3>
 											<float name="ScrollBarImageTransparency">0</float>
 											<int name="ScrollBarThickness">5</int>
@@ -21752,9 +21752,9 @@
 											<token name="HorizontalScrollBarInset">0</token>
 											<Content name="MidImage"><url>rbxasset://textures/ui/Scroll/scroll-middle.png</url></Content>
 											<Color3 name="ScrollBarImageColor3">
-												<R>1</R>
-												<G>0</G>
-												<B>0</B>
+												<R>0</R>
+												<G>1</G>
+												<B>1</B>
 											</Color3>
 											<float name="ScrollBarImageTransparency">0</float>
 											<int name="ScrollBarThickness">5</int>
@@ -29779,9 +29779,9 @@
 					<Properties>
 						<Content name="Image"><url>rbxassetid://4623529748</url></Content>
 						<Color3 name="ImageColor3">
-							<R>0.882352948</R>
-							<G>0</G>
-							<B>0</B>
+							<R>0</R>
+							<G>0.882352941</G>
+							<B>0.882352941</B>
 						</Color3>
 						<Vector2 name="ImageRectOffset">
 							<X>0</X>
@@ -32389,9 +32389,9 @@
 						<Properties>
 							<Content name="Image"><url>rbxassetid://4623529748</url></Content>
 							<Color3 name="ImageColor3">
-								<R>0.882352948</R>
-								<G>0</G>
-								<B>0</B>
+								<R>0</R>
+								<G>0.882352941</G>
+								<B>0.882352941</B>
 							</Color3>
 							<Vector2 name="ImageRectOffset">
 								<X>0</X>
@@ -34613,9 +34613,9 @@
 										<Properties>
 											<Content name="Image"><url>http://www.roblox.com/asset/?id=4503146326</url></Content>
 											<Color3 name="ImageColor3">
-												<R>1</R>
-												<G>0</G>
-												<B>0</B>
+												<R>0</R>
+												<G>1</G>
+												<B>1</B>
 											</Color3>
 											<Vector2 name="ImageRectOffset">
 												<X>0</X>
@@ -34890,9 +34890,9 @@
 												<token name="HorizontalScrollBarInset">0</token>
 												<Content name="MidImage"><url>rbxasset://textures/ui/Scroll/scroll-middle.png</url></Content>
 												<Color3 name="ScrollBarImageColor3">
-													<R>1</R>
-													<G>0</G>
-													<B>0</B>
+													<R>0</R>
+													<G>1</G>
+													<B>1</B>
 												</Color3>
 												<float name="ScrollBarImageTransparency">0</float>
 												<int name="ScrollBarThickness">5</int>
@@ -40725,9 +40725,9 @@
 						<Properties>
 							<Content name="Image"><url>rbxassetid://4623529748</url></Content>
 							<Color3 name="ImageColor3">
-								<R>0.882352948</R>
-								<G>0</G>
-								<B>0</B>
+								<R>0</R>
+								<G>0.882352941</G>
+								<B>0.882352941</B>
 							</Color3>
 							<Vector2 name="ImageRectOffset">
 								<X>0</X>
@@ -42949,9 +42949,9 @@
 										<Properties>
 											<Content name="Image"><url>http://www.roblox.com/asset/?id=4503146326</url></Content>
 											<Color3 name="ImageColor3">
-												<R>1</R>
-												<G>0</G>
-												<B>0</B>
+												<R>0</R>
+												<G>1</G>
+												<B>1</B>
 											</Color3>
 											<Vector2 name="ImageRectOffset">
 												<X>0</X>
@@ -43226,9 +43226,9 @@
 												<token name="HorizontalScrollBarInset">0</token>
 												<Content name="MidImage"><url>rbxasset://textures/ui/Scroll/scroll-middle.png</url></Content>
 												<Color3 name="ScrollBarImageColor3">
-													<R>1</R>
-													<G>0</G>
-													<B>0</B>
+													<R>0</R>
+													<G>1</G>
+													<B>1</B>
 												</Color3>
 												<float name="ScrollBarImageTransparency">0</float>
 												<int name="ScrollBarThickness">5</int>
@@ -49158,9 +49158,9 @@
 						<Properties>
 							<Content name="Image"><url>http://www.roblox.com/asset/?id=4503146326</url></Content>
 							<Color3 name="ImageColor3">
-								<R>0.666666687</R>
-								<G>0</G>
-								<B>0</B>
+								<R>0</R>
+								<G>0.666666667</G>
+								<B>0.666666667</B>
 							</Color3>
 							<Vector2 name="ImageRectOffset">
 								<X>0</X>
@@ -51231,9 +51231,9 @@
 										<Properties>
 											<Content name="Image"><url>http://www.roblox.com/asset/?id=4503146326</url></Content>
 											<Color3 name="ImageColor3">
-												<R>0.882352948</R>
-												<G>0</G>
-												<B>0</B>
+												<R>0</R>
+												<G>0.882352941</G>
+												<B>0.882352941</B>
 											</Color3>
 											<Vector2 name="ImageRectOffset">
 												<X>0</X>
@@ -51508,9 +51508,9 @@
 												<token name="HorizontalScrollBarInset">0</token>
 												<Content name="MidImage"><url>rbxasset://textures/ui/Scroll/scroll-middle.png</url></Content>
 												<Color3 name="ScrollBarImageColor3">
-													<R>1</R>
-													<G>0</G>
-													<B>0</B>
+													<R>0</R>
+													<G>1</G>
+													<B>1</B>
 												</Color3>
 												<float name="ScrollBarImageTransparency">0</float>
 												<int name="ScrollBarThickness">5</int>
@@ -53231,9 +53231,9 @@
 										<Properties>
 											<Content name="Image"><url>http://www.roblox.com/asset/?id=4503146326</url></Content>
 											<Color3 name="ImageColor3">
-												<R>0.882352948</R>
-												<G>0</G>
-												<B>0</B>
+												<R>0</R>
+												<G>0.882352941</G>
+												<B>0.882352941</B>
 											</Color3>
 											<Vector2 name="ImageRectOffset">
 												<X>0</X>
@@ -53508,9 +53508,9 @@
 												<token name="HorizontalScrollBarInset">0</token>
 												<Content name="MidImage"><url>rbxasset://textures/ui/Scroll/scroll-middle.png</url></Content>
 												<Color3 name="ScrollBarImageColor3">
-													<R>1</R>
-													<G>0</G>
-													<B>0</B>
+													<R>0</R>
+													<G>1</G>
+													<B>1</B>
 												</Color3>
 												<float name="ScrollBarImageTransparency">0</float>
 												<int name="ScrollBarThickness">5</int>
@@ -59211,9 +59211,9 @@
 										<Properties>
 											<Content name="Image"><url>http://www.roblox.com/asset/?id=4503146326</url></Content>
 											<Color3 name="ImageColor3">
-												<R>0.882352948</R>
-												<G>0</G>
-												<B>0</B>
+												<R>0</R>
+												<G>0.882352941</G>
+												<B>0.882352941</B>
 											</Color3>
 											<Vector2 name="ImageRectOffset">
 												<X>0</X>
@@ -59488,9 +59488,9 @@
 												<token name="HorizontalScrollBarInset">0</token>
 												<Content name="MidImage"><url>rbxasset://textures/ui/Scroll/scroll-middle.png</url></Content>
 												<Color3 name="ScrollBarImageColor3">
-													<R>1</R>
-													<G>0</G>
-													<B>0</B>
+													<R>0</R>
+													<G>1</G>
+													<B>1</B>
 												</Color3>
 												<float name="ScrollBarImageTransparency">0</float>
 												<int name="ScrollBarThickness">5</int>
@@ -62015,9 +62015,9 @@
 						<Properties>
 							<Content name="Image"><url>http://www.roblox.com/asset/?id=4503146326</url></Content>
 							<Color3 name="ImageColor3">
-								<R>0.666666687</R>
-								<G>0</G>
-								<B>0</B>
+								<R>0</R>
+								<G>0.666666667</G>
+								<B>0.666666667</B>
 							</Color3>
 							<Vector2 name="ImageRectOffset">
 								<X>0</X>
@@ -64088,9 +64088,9 @@
 										<Properties>
 											<Content name="Image"><url>http://www.roblox.com/asset/?id=4503146326</url></Content>
 											<Color3 name="ImageColor3">
-												<R>0.882352948</R>
-												<G>0</G>
-												<B>0</B>
+												<R>0</R>
+												<G>0.882352941</G>
+												<B>0.882352941</B>
 											</Color3>
 											<Vector2 name="ImageRectOffset">
 												<X>0</X>
@@ -64365,9 +64365,9 @@
 												<token name="HorizontalScrollBarInset">0</token>
 												<Content name="MidImage"><url>rbxasset://textures/ui/Scroll/scroll-middle.png</url></Content>
 												<Color3 name="ScrollBarImageColor3">
-													<R>1</R>
-													<G>0</G>
-													<B>0</B>
+													<R>0</R>
+													<G>1</G>
+													<B>1</B>
 												</Color3>
 												<float name="ScrollBarImageTransparency">0</float>
 												<int name="ScrollBarThickness">5</int>
@@ -66088,9 +66088,9 @@
 										<Properties>
 											<Content name="Image"><url>http://www.roblox.com/asset/?id=4503146326</url></Content>
 											<Color3 name="ImageColor3">
-												<R>0.882352948</R>
-												<G>0</G>
-												<B>0</B>
+												<R>0</R>
+												<G>0.882352941</G>
+												<B>0.882352941</B>
 											</Color3>
 											<Vector2 name="ImageRectOffset">
 												<X>0</X>
@@ -66365,9 +66365,9 @@
 												<token name="HorizontalScrollBarInset">0</token>
 												<Content name="MidImage"><url>rbxasset://textures/ui/Scroll/scroll-middle.png</url></Content>
 												<Color3 name="ScrollBarImageColor3">
-													<R>1</R>
-													<G>0</G>
-													<B>0</B>
+													<R>0</R>
+													<G>1</G>
+													<B>1</B>
 												</Color3>
 												<float name="ScrollBarImageTransparency">0</float>
 												<int name="ScrollBarThickness">5</int>
@@ -72068,9 +72068,9 @@
 										<Properties>
 											<Content name="Image"><url>http://www.roblox.com/asset/?id=4503146326</url></Content>
 											<Color3 name="ImageColor3">
-												<R>0.882352948</R>
-												<G>0</G>
-												<B>0</B>
+												<R>0</R>
+												<G>0.882352941</G>
+												<B>0.882352941</B>
 											</Color3>
 											<Vector2 name="ImageRectOffset">
 												<X>0</X>
@@ -72345,9 +72345,9 @@
 												<token name="HorizontalScrollBarInset">0</token>
 												<Content name="MidImage"><url>rbxasset://textures/ui/Scroll/scroll-middle.png</url></Content>
 												<Color3 name="ScrollBarImageColor3">
-													<R>1</R>
-													<G>0</G>
-													<B>0</B>
+													<R>0</R>
+													<G>1</G>
+													<B>1</B>
 												</Color3>
 												<float name="ScrollBarImageTransparency">0</float>
 												<int name="ScrollBarThickness">5</int>
@@ -74851,9 +74851,9 @@
 				<Properties>
 					<Content name="Image"><url>rbxassetid://4623529748</url></Content>
 					<Color3 name="ImageColor3">
-						<R>1</R>
-						<G>0</G>
-						<B>0</B>
+						<R>0</R>
+						<G>1</G>
+						<B>1</B>
 					</Color3>
 					<Vector2 name="ImageRectOffset">
 						<X>0</X>

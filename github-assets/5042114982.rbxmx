@@ -6834,9 +6834,9 @@
 					<Properties>
 						<Content name="Image"><url>rbxassetid://4623529748</url></Content>
 						<Color3 name="ImageColor3">
-							<R>0.666666687</R>
-							<G>0</G>
-							<B>0</B>
+							<R>0</R>
+							<G>0.666666667</G>
+							<B>0.666666667</B>
 						</Color3>
 						<Vector2 name="ImageRectOffset">
 							<X>0</X>

@@ -9,12 +9,11 @@ if oh then
     oh.Exit()
 end
 
-print("hi")
-
 local web = true
 local user = "NPSummers"
 local repo = "Hydroxide-"
 local branch = "main"
+local sourceRevision = branch
 local importCache = {}
 local iconCache = {}
 
@@ -28,6 +27,59 @@ local function httpGet(url)
     end
 
     return game:HttpGet(url)
+end
+
+local HttpService = game:GetService("HttpService")
+
+local function isCommit(value)
+    return type(value) == "string"
+        and (#value == 40 or #value == 64)
+        and not value:find("[^%x]")
+end
+
+local function resolveCommit()
+    local injectedCommit = rawget(environment, "__HYDROXIDE_COMMIT")
+
+    if isCommit(injectedCommit) then
+        return injectedCommit:lower()
+    end
+
+    local success, commit = pcall(function()
+        local cacheBuster = tostring(os.time and os.time() or tick())
+        local url = "https://api.github.com/repos/" .. user .. "/" .. repo .. "/commits/" .. branch .. "?_=" .. cacheBuster
+        return HttpService:JSONDecode(httpGet(url))
+    end)
+
+    if success and commit and isCommit(commit.sha) then
+        return commit.sha:lower()
+    end
+end
+
+local version = resolveCommit()
+
+if version then
+    sourceRevision = version
+    environment.__HYDROXIDE_COMMIT = version
+    print(("[Hydroxide+] init.lua loaded - commit %s"):format(version))
+else
+    version = "unversioned:" .. branch
+    warn("[Hydroxide+] init.lua was not loaded with an embedded commit; using the mutable " .. branch .. " branch")
+end
+
+local function rawUrl(path)
+    return "https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. sourceRevision .. "/" .. path
+end
+
+local function luaCachePath(asset, hasFolderFunctions)
+    if hasFolderFunctions then
+        return "hydroxide_plus/user/" .. user .. "/" .. sourceRevision .. "/" .. asset .. ".lua"
+    end
+
+    return "hydroxide-" .. user .. "-" .. sourceRevision .. "-" .. asset:gsub("/", "-") .. ".lua"
+end
+
+local function luaChunkName(asset)
+    return asset .. ".lua@" .. sourceRevision
 end
 
 local assetFiles = {
@@ -44,7 +96,7 @@ local function getAssetFile(name)
     end
 
     if not (isFile and isFile(path)) then
-        writeFile(path, httpGet("https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. branch .. "/github-assets/" .. name))
+        writeFile(path, httpGet(rawUrl("github-assets/" .. name)))
     end
 
     return path
@@ -71,7 +123,7 @@ local function getIconAsset(id)
     end
 
     if not (rawIsFile and rawIsFile(path)) then
-        rawWriteFile(path, httpGet("https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. branch .. "/github-assets/icons/" .. id .. ".png"))
+        rawWriteFile(path, httpGet(rawUrl("github-assets/icons/" .. id .. ".png")))
     end
 
     iconCache[id] = rawGetCustomAsset(path)
@@ -249,6 +301,7 @@ useMethods(globalMethods)
 
 environment.hasMethods = hasMethods
 environment.oh = {
+    Commit = sourceRevision,
     Events = {},
     Hooks = {},
     Cache = importCache,
@@ -333,56 +386,31 @@ if globalMethods.getConnections and globalMethods.getMetatable and globalMethods
     end
 end
 
-local HttpService = game:GetService("HttpService")
-
-local function getVersion()
-    local success, releases = pcall(function()
-        return HttpService:JSONDecode(httpGet("https://api.github.com/repos/" .. user .. "/" .. repo .. "/releases"))
-    end)
-    local release = success and releases and releases[1]
-
-    if release and release.tag_name then
-        return release.tag_name
-    end
-
-    local commitSuccess, commit = pcall(function()
-        return HttpService:JSONDecode(httpGet("https://api.github.com/repos/" .. user .. "/" .. repo .. "/commits/" .. branch))
-    end)
-
-    if commitSuccess and commit and commit.sha then
-        return commit.sha
-    end
-
-    return "unknown"
-end
-
-local version = getVersion()
-print(("[Hydroxide+] init.lua loaded - commit %s"):format(version))
-
 if readFile and writeFile then
     local hasFolderFunctions = (isFolder and makeFolder) ~= nil
     local ran, result = pcall(readFile, "__oh_version.txt")
 
-    if not ran or version ~= result then
-        if hasFolderFunctions then
-            local function createFolder(path)
-                if not isFolder(path) then
-                    makeFolder(path)
-                end
+    if hasFolderFunctions then
+        local function createFolder(path)
+            if not isFolder(path) then
+                makeFolder(path)
             end
-
-            createFolder("hydroxide")
-            createFolder("hydroxide/user")
-            createFolder("hydroxide/user/" .. user)
-            createFolder("hydroxide/user/" .. user .. "/methods")
-            createFolder("hydroxide/user/" .. user .. "/modules")
-            createFolder("hydroxide/user/" .. user .. "/objects")
-            createFolder("hydroxide/user/" .. user .. "/ui")
-            createFolder("hydroxide/user/" .. user .. "/ui/controls")
-            createFolder("hydroxide/user/" .. user .. "/ui/modules")
-            createFolder("hydroxide/assets")
         end
 
+        createFolder("hydroxide_plus")
+        createFolder("hydroxide_plus/user")
+        createFolder("hydroxide_plus/user/" .. user)
+        createFolder("hydroxide_plus/user/" .. user .. "/" .. sourceRevision)
+        createFolder("hydroxide_plus/user/" .. user .. "/" .. sourceRevision .. "/methods")
+        createFolder("hydroxide_plus/user/" .. user .. "/" .. sourceRevision .. "/modules")
+        createFolder("hydroxide_plus/user/" .. user .. "/" .. sourceRevision .. "/objects")
+        createFolder("hydroxide_plus/user/" .. user .. "/" .. sourceRevision .. "/ui")
+        createFolder("hydroxide_plus/user/" .. user .. "/" .. sourceRevision .. "/ui/controls")
+        createFolder("hydroxide_plus/user/" .. user .. "/" .. sourceRevision .. "/ui/modules")
+        createFolder("hydroxide_plus/assets")
+    end
+
+    if not ran or version ~= result then
         function environment.import(asset)
             if importCache[asset] then
                 return unpack(importCache[asset])
@@ -394,26 +422,26 @@ if readFile and writeFile then
                 assets = { loadAsset(asset) }
             elseif web then
                 if readFile and writeFile then
-                    local file = (hasFolderFunctions and "hydroxide/user/" .. user .. '/' .. asset .. ".lua") or ("hydroxide-" .. user .. '-' .. asset:gsub('/', '-') .. ".lua")
+                    local file = luaCachePath(asset, hasFolderFunctions)
                     local content
 
                     if (isFile and not isFile(file)) or not importCache[asset] then
-                        content = httpGet("https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. branch .. '/' .. asset .. ".lua")
+                        content = httpGet(rawUrl(asset .. ".lua"))
                         writeFile(file, content)
                     else
                         local ran, result = pcall(readFile, file)
 
                         if (not ran) or not importCache[asset] then
-                            content = httpGet("https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. branch .. '/' .. asset .. ".lua")
+                            content = httpGet(rawUrl(asset .. ".lua"))
                             writeFile(file, content)
                         else
                             content = result
                         end
                     end
 
-                    assets = { loadstring(content, asset .. '.lua')() }
+                    assets = { loadstring(content, luaChunkName(asset))() }
                 else
-                    assets = { loadstring(httpGet("https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. branch .. '/' .. asset .. ".lua"), asset .. '.lua')() }
+                    assets = { loadstring(httpGet(rawUrl(asset .. ".lua")), luaChunkName(asset))() }
                 end
             else
                 assets = { loadstring(readFile("hydroxide/" .. asset .. ".lua"), asset .. '.lua')() }
@@ -433,18 +461,18 @@ if readFile and writeFile then
             if asset:find("rbxassetid://") then
                 assets = { loadAsset(asset) }
             elseif web then
-                local file = (hasFolderFunctions and "hydroxide/user/" .. user .. '/' .. asset .. ".lua") or ("hydroxide-" .. user .. '-' .. asset:gsub('/', '-') .. ".lua")
+                local file = luaCachePath(asset, hasFolderFunctions)
                 local ran, result = pcall(readFile, file)
                 local content
 
                 if not ran then
-                    content = httpGet("https://raw.githubusercontent.com/" .. user .. "/" .. repo .. "/" .. branch .. '/' .. asset .. ".lua")
+                    content = httpGet(rawUrl(asset .. ".lua"))
                     writeFile(file, content)
                 else
                     content = result
                 end
 
-                assets = { loadstring(content, asset .. '.lua')() }
+                assets = { loadstring(content, luaChunkName(asset))() }
             else
                 assets = { loadstring(readFile("hydroxide/" .. asset .. ".lua"), asset .. '.lua')() }
             end
